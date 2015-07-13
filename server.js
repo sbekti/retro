@@ -5,6 +5,8 @@ var path = require('path');
 var jpeg = require('jpeg-js');
 var rfb = require('rfb2');
 
+var limit = false;
+
 var r = rfb.createConnection({
   host: 'bekti.io',
   port: 5902,
@@ -17,10 +19,14 @@ r.on('connect', function() {
 });
 
 r.on('rect', function(rect) {
+  if (limit) return;
+
   if (rect.encoding != 0) {
     console.log('COPY');
     return;
   }
+
+  console.log('RAW')
 
   var frame = new Buffer(rect.width * rect.height * 4);
 
@@ -47,6 +53,11 @@ r.on('rect', function(rect) {
   }
 
   io.emit('frame', payload);
+  limit = true;
+
+  setTimeout(function() {
+    limit = false;
+  }, 1000);
 });
 
 io.on('connection', function(socket) {
