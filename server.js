@@ -8,10 +8,10 @@ var rfb = require('rfb2');
 var limit = false;
 
 var r = rfb.createConnection({
-  //host: 'bekti.io',
-  //port: 5902,
-  host: '192.168.2.27',
-  port: 5900,
+  host: 'bekti.io',
+  port: 5902,
+  //host: '192.168.2.27',
+  //port: 5900,
   password: ''
 });
 
