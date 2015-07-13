@@ -1,16 +1,69 @@
-<h1>Bekti Retro-as-a-Service (RaaS)!</h1>
-<p>View-only at the moment. Sorry!</p>
-<canvas id="kampas" width="640" height="480"></canvas>
+<html>
+<head>
+  <title>Bekti Retro-as-a-Service (RaaS)</title>
+</head>
+<body oncontextmenu="return false;">
+  <h1>Bekti Retro-as-a-Service (RaaS)</h1>
+  <canvas id="kampas" width="640" height="480"></canvas>
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io();
-  var canvas = document.getElementById('kampas');
-  var context = canvas.getContext('2d');
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+    var canvas = document.getElementById('kampas');
+    var context = canvas.getContext('2d');
 
-  socket.on('frame', function(payload) {
-    var image = new Image();
-    image.src = 'data:image/jpeg;base64,' + payload.data;
-    context.drawImage(image, payload.x, payload.y);
-  });
-</script>
+    socket.on('frame', function(payload) {
+      var image = new Image();
+      image.src = 'data:image/jpeg;base64,' + payload.data;
+      context.drawImage(image, payload.x, payload.y);
+    });
+
+    $('#kampas').mousedown(function(e) {
+      var offset = $(this).offset();
+      var x = (e.pageX - offset.left).toFixed(0);
+      var y = (e.pageY - offset.top).toFixed(0);
+      var button = e.which;
+      if (button == 3) button = 4;
+
+      var payload = {
+        x: x,
+        y: y,
+        button: button
+      };
+
+      socket.emit('pointer', payload);
+    });
+
+    $('#kampas').mouseup(function(e) {
+      var offset = $(this).offset();
+      var x = (e.pageX - offset.left).toFixed(0);
+      var y = (e.pageY - offset.top).toFixed(0);
+
+      var payload = {
+        x: x,
+        y: y,
+        button: 0
+      };
+
+      socket.emit('pointer', payload);
+    });
+
+    $('#kampas').mousemove(function(e) {
+      var offset = $(this).offset();
+      var x = (e.pageX - offset.left).toFixed(0);
+      var y = (e.pageY - offset.top).toFixed(0);
+      var button = e.which;
+      if (button == 3) button = 4;
+
+      var payload = {
+        x: x,
+        y: y,
+        button: button
+      };
+
+      socket.emit('pointer', payload);
+    });
+  </script>
+</body>
+</html>

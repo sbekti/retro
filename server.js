@@ -8,8 +8,10 @@ var rfb = require('rfb2');
 var limit = false;
 
 var r = rfb.createConnection({
-  host: 'bekti.io',
-  port: 5902,
+  //host: 'bekti.io',
+  //port: 5902,
+  host: '192.168.2.27',
+  port: 5900,
   password: ''
 });
 
@@ -20,13 +22,7 @@ r.on('connect', function() {
 
 r.on('rect', function(rect) {
   if (limit) return;
-
-  if (rect.encoding != 0) {
-    console.log('COPY');
-    return;
-  }
-
-  console.log('RAW')
+  if (rect.encoding != 0) return;
 
   var frame = new Buffer(rect.width * rect.height * 4);
 
@@ -35,7 +31,7 @@ r.on('rect', function(rect) {
     frame[o++] = rect.data[i + 1];
     frame[o++] = rect.data[i];
     frame[o++] = 0xff;
-  }
+  };
 
   var rawImage = {
     data: frame,
@@ -50,7 +46,7 @@ r.on('rect', function(rect) {
     y: rect.y,
     width: rect.width,
     height: rect.height
-  }
+  };
 
   io.emit('frame', payload);
   limit = true;
@@ -63,7 +59,10 @@ r.on('rect', function(rect) {
 
 io.on('connection', function(socket) {
   r.requestUpdate(false, 0, 0, r.width, r.height);
-  console.log('a user connected');
+
+  socket.on('pointer', function(payload) {
+    r.pointerEvent(payload.x, payload.y, payload.button);
+  });
 });
 
 app.get('/', function(req, res) {
