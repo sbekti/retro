@@ -1,0 +1,15 @@
+<h1>Bekti Retro-as-a-Service (Raas)!</h1>
+<canvas id="kampas" width="640" height="480"></canvas>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  var canvas = document.getElementById('kampas');
+  var context = canvas.getContext('2d');
+
+  socket.on('frame', function(payload) {
+    var image = new Image();
+    image.src = 'data:image/jpeg;base64,' + payload.data;
+    context.drawImage(image, payload.x, payload.y);
+  });
+</script>
