@@ -16,7 +16,6 @@ var r = rfb.createConnection({
 });
 
 r.on('connect', function() {
-  console.log('Successfully connected and authorised');
   console.log('Remote screen name: ' + r.title + ' width:' + r.width + ' height: ' + r.height);
 });
 
