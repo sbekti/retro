@@ -58,7 +58,7 @@ r.on('rect', function(rect) {
   setTimeout(function() {
     limit = false;
     r.requestUpdate(false, 0, 0, r.width, r.height);
-  }, 1000);
+  }, 500);
 });
 
 io.on('connection', function(socket) {
