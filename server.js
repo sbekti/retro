@@ -50,6 +50,7 @@ r.on('rect', function(rect) {
 });
 
 io.on('connection', function(socket) {
+  r.requestUpdate(false, 0, 0, r.width, r.height);
   console.log('a user connected');
 });
 
