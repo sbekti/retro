@@ -58,8 +58,8 @@ io.on('connection', function(socket) {
     r.pointerEvent(payload.x, payload.y, payload.button);
   });
 
-  socket.on('key', function(payload) {
-    tcp.write('sendkey ' + payload.key + '\n');
+  socket.on('key', function(key) {
+    tcp.write('sendkey ' + key + '\n');
   });
 });
 
