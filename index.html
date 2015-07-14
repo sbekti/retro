@@ -65,10 +65,9 @@
       socket.emit('pointer', payload);
     });
 
-    function sendKey(code, state) {
+    function sendKey(key) {
       var payload = {
-        code: code,
-        state: state
+        key: key
       };
 
       socket.emit('key', payload);

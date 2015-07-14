@@ -4,6 +4,7 @@ var io = require('socket.io')(http);
 var path = require('path');
 var jpeg = require('jpeg-js');
 var rfb = require('rfb2');
+var net = require('net');
 
 var r = rfb.createConnection({
   host: 'bekti.io',
@@ -12,6 +13,8 @@ var r = rfb.createConnection({
   //port: 5900,
   password: ''
 });
+
+var tcp = net.connect({host: 'bekti.io', port: 4444});
 
 r.on('connect', function() {
   console.log('Remote screen name: ' + r.title + ' width:' + r.width + ' height: ' + r.height);
@@ -56,7 +59,7 @@ io.on('connection', function(socket) {
   });
 
   socket.on('key', function(payload) {
-    r.keyEvent(payload.code, payload.state);
+    tcp.write('sendkey ' + payload.key + '\n');
   });
 });
 
