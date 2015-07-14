@@ -3,7 +3,6 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 var jpeg = require('jpeg-js');
-var sharp = require('sharp');
 var rfb = require('rfb2');
 
 var r = rfb.createConnection({
