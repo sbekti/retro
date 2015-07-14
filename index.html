@@ -4,13 +4,13 @@
 </head>
 <body oncontextmenu="return false;">
   <h1>Bekti Retro-as-a-Service (RaaS)</h1>
-  <canvas id="kampas" width="640" height="480"></canvas>
+  <canvas id="canvas-screen" width="640" height="480"></canvas>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     var socket = io();
-    var canvas = document.getElementById('kampas');
+    var canvas = document.getElementById('canvas-screen');
     var context = canvas.getContext('2d');
 
     socket.on('frame', function(payload) {
@@ -19,7 +19,7 @@
       context.drawImage(image, payload.x, payload.y);
     });
 
-    $('#kampas').mousedown(function(e) {
+    $('#canvas-screen').mousedown(function(e) {
       var offset = $(this).offset();
       var x = (e.pageX - offset.left).toFixed(0);
       var y = (e.pageY - offset.top).toFixed(0);
@@ -35,7 +35,7 @@
       socket.emit('pointer', payload);
     });
 
-    $('#kampas').mouseup(function(e) {
+    $('#canvas-screen').mouseup(function(e) {
       var offset = $(this).offset();
       var x = (e.pageX - offset.left).toFixed(0);
       var y = (e.pageY - offset.top).toFixed(0);
@@ -49,7 +49,7 @@
       socket.emit('pointer', payload);
     });
 
-    $('#kampas').mousemove(function(e) {
+    $('#canvas-screen').mousemove(function(e) {
       var offset = $(this).offset();
       var x = (e.pageX - offset.left).toFixed(0);
       var y = (e.pageY - offset.top).toFixed(0);

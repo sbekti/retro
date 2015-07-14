@@ -3,9 +3,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
 var jpeg = require('jpeg-js');
+var sharp = require('sharp');
 var rfb = require('rfb2');
-
-var limit = false;
 
 var r = rfb.createConnection({
   host: 'bekti.io',
@@ -20,7 +19,6 @@ r.on('connect', function() {
 });
 
 r.on('rect', function(rect) {
-  if (limit) return;
   if (rect.encoding != 0) return;
 
   var frame = new Buffer(rect.width * rect.height * 4);
@@ -39,6 +37,7 @@ r.on('rect', function(rect) {
   };
 
   var jpegImage = jpeg.encode(rawImage, 50);
+
   var payload = {
     data: jpegImage.data.toString('base64'),
     x: rect.x,
@@ -48,12 +47,6 @@ r.on('rect', function(rect) {
   };
 
   io.emit('frame', payload);
-  limit = true;
-
-  setTimeout(function() {
-    limit = false;
-    r.requestUpdate(false, 0, 0, r.width, r.height);
-  }, 500);
 });
 
 io.on('connection', function(socket) {
