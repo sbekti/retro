@@ -55,7 +55,7 @@ io.on('connection', function(socket) {
     r.pointerEvent(payload.x, payload.y, payload.button);
   });
 
-  socket.on('keydown', function(payload) {
+  socket.on('key', function(payload) {
     r.keyEvent(payload.code, payload.state);
   });
 });
