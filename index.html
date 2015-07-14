@@ -136,6 +136,7 @@
     });
 
     $('#canvas-screen').mousedown(function(e) {
+      e.preventDefault();
       var offset = $(this).offset();
       var x = (e.pageX - offset.left).toFixed(0);
       var y = (e.pageY - offset.top).toFixed(0);
@@ -152,6 +153,7 @@
     });
 
     $('#canvas-screen').mouseup(function(e) {
+      e.preventDefault();
       var offset = $(this).offset();
       var x = (e.pageX - offset.left).toFixed(0);
       var y = (e.pageY - offset.top).toFixed(0);
@@ -166,6 +168,7 @@
     });
 
     $('#canvas-screen').mousemove(function(e) {
+      e.preventDefault();
       var offset = $(this).offset();
       var x = (e.pageX - offset.left).toFixed(0);
       var y = (e.pageY - offset.top).toFixed(0);
@@ -180,10 +183,6 @@
 
       socket.emit('pointer', payload);
     });
-
-    function sendKey(key) {
-      socket.emit('key', key);
-    }
 
     $(document).keydown(function(e) {
       e.preventDefault();
