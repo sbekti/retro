@@ -64,6 +64,19 @@
 
       socket.emit('pointer', payload);
     });
+
+    function sendKey(code, state) {
+      var payload = {
+        code: code,
+        state: state
+      };
+
+      socket.emit('key', payload);
+    }
+
+    $(document).keydown(function(e) {
+      console.log(e.which);
+    });
   </script>
 </body>
 </html>

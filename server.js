@@ -54,6 +54,10 @@ io.on('connection', function(socket) {
   socket.on('pointer', function(payload) {
     r.pointerEvent(payload.x, payload.y, payload.button);
   });
+
+  socket.on('keydown', function(payload) {
+    r.keyEvent(payload.code, payload.state);
+  });
 });
 
 app.get('/', function(req, res) {
