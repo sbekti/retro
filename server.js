@@ -3,7 +3,6 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
-var jpeg = require('jpeg-js');
 var rfb = require('rfb2');
 var net = require('net');
 
@@ -23,20 +22,19 @@ r.on('connect', function() {
 
 r.on('rect', function(rect) {
   if (rect.encoding != 0) return;
-  
-  var frame = new Buffer(rect.width * rect.height * 4);
+
+  var frameBuffer = new Buffer(rect.width * rect.height * 3);
 
   for (var i = 0, o = 0; i < rect.data.length; i += 4) {
-    frame[o++] = rect.data[i];
-    frame[o++] = rect.data[i + 1];
-    frame[o++] = rect.data[i + 2];
-    frame[o++] = 0xff;
+    frameBuffer[o++] = rect.data[i + 2];
+    frameBuffer[o++] = rect.data[i + 1];
+    frameBuffer[o++] = rect.data[i];
   }
 
-  var data = frame.toJSON(frame);
+  var frame = frameBuffer.toJSON(frameBuffer);
 
   var payload = {
-    data: data,
+    frame: frame,
     x: rect.x,
     y: rect.y,
     width: rect.width,

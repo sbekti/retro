@@ -1,4 +1,4 @@
-var jpeg = require('jpeg-js');
+//var jpeg = require('jpeg-js');
 
 var socket = io();
 var canvas = document.getElementById('canvas-screen');
@@ -189,24 +189,25 @@ $(document).keyup(function(e) {
 });
 
 socket.on('frame', function(payload) {
-  var data = payload.data.data;
-  var frame = new Buffer(payload.width * payload.height * 4);
+  var data = payload.frame.data;
+  var image = context.createImageData(payload.width, payload.height);
 
-  for (var i = 0, o = 0; i < data.length; i += 4) {
-    frame[o++] = data[i + 2];
-    frame[o++] = data[i + 1];
-    frame[o++] = data[i];
-    frame[o++] = 0xff;
+  for (var s = 0, d = 0, len = payload.width * payload.height * 4; d < len; ++d) {
+    if (d % 4 == 3) {
+      image.data[d] = 0xff;
+    } else {
+      image.data[d] = data[s];
+      ++s;
+    }
   }
 
-  var rawImage = {
-    data: frame,
-    width: payload.width,
-    height: payload.height
-  };
-
-  var jpegImage = jpeg.encode(rawImage, 50);
-  var image = new Image();
-  image.src = 'data:image/jpeg;base64,' + jpegImage.data.toString('base64');
-  context.drawImage(image, payload.x, payload.y);
+  context.putImageData(image, payload.x, payload.y);
 });
+
+var x = canvas.width / 2;
+var y = canvas.height / 2;
+
+context.font = '30pt Tahoma';
+context.textAlign = 'center';
+context.fillStyle = 'black';
+context.fillText('Loading screen...', x, y);

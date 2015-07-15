@@ -1,14 +1,34 @@
 <html>
 <head>
   <title>Bekti Retro-as-a-Service (RaaS)</title>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css">
+  <style type="text/css">
+    body {
+      text-align: center;
+    }
+
+    .screen {
+      width: 678px;
+      float: none;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
 </head>
 <body oncontextmenu="return false;">
-  <h1>Bekti Retro-as-a-Service (RaaS)</h1>
-  <p>DO NOT TURN OFF THE COMPUTER</p>
-  <canvas id="canvas-screen" width="640" height="480"></canvas>
+  <div class="container">
+    <h1>Bekti Retro-as-a-Service (RaaS)</h1>
+    <p>See the internet through Internet Explorer 5</p>
+    <p>DO NOT TURN OFF THE COMPUTER</p>
+    <div class="well screen">
+      <canvas id="canvas-screen" width="640" height="480"></canvas>
+    </div>
+    <p>Copyright &copy; 2015 Samudra Harapan Bekti | <a href="http://bekti.io/">Bekti I/O</a></p>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
   <script src="/bundle.js"></script>
 </body>
 </html>
