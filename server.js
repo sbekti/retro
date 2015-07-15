@@ -23,11 +23,13 @@ var tcp = net.connect({
 r.on('connect', function() {
   console.log('Remote screen name: ' + r.title + ' width:' + r.width + ' height: ' + r.height);
 
-  fullFrameBuffer.x = 0;
-  fullFrameBuffer.y = 0;
-  fullFrameBuffer.width = r.width;
-  fullFrameBuffer.height = r.height;
-  fullFrameBuffer.frame = Uint8Array(r.width * r.height * 3);
+  fullFrameBuffer = {
+    x: 0,
+    y: 0,
+    width: r.width,
+    height: r.height,
+    frame: new Uint8Array(r.width * r.height * 3)
+  };
 });
 
 r.on('rect', function(rect) {
