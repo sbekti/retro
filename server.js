@@ -1,4 +1,5 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var path = require('path');
@@ -22,31 +23,25 @@ r.on('connect', function() {
 
 r.on('rect', function(rect) {
   if (rect.encoding != 0) return;
-
+  
   var frame = new Buffer(rect.width * rect.height * 4);
 
   for (var i = 0, o = 0; i < rect.data.length; i += 4) {
-    frame[o++] = rect.data[i + 2];
-    frame[o++] = rect.data[i + 1];
     frame[o++] = rect.data[i];
+    frame[o++] = rect.data[i + 1];
+    frame[o++] = rect.data[i + 2];
     frame[o++] = 0xff;
-  };
+  }
 
-  var rawImage = {
-    data: frame,
-    width: rect.width,
-    height: rect.height
-  };
-
-  var jpegImage = jpeg.encode(rawImage, 50);
+  var data = frame.toJSON(frame);
 
   var payload = {
-    data: jpegImage.data.toString('base64'),
+    data: data,
     x: rect.x,
     y: rect.y,
     width: rect.width,
     height: rect.height
-  };
+  }
 
   io.emit('frame', payload);
 });
@@ -62,6 +57,8 @@ io.on('connection', function(socket) {
     tcp.write('sendkey ' + key + '\n');
   });
 });
+
+app.use(express.static('public'));
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'index.html'));
