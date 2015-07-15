@@ -18,14 +18,14 @@ var ws = sockjs.createServer();
 ws.installHandlers(http, { prefix: '/ws' });
 
 var r = rfb.createConnection({
-  host: process.env.RFB_HOST || 'bekti.io',
-  port: process.env.RFB_PORT || 5902,
+  host: process.env.RFB_HOST,
+  port: process.env.RFB_PORT,
   password: process.env.RFB_PASSWORD
 });
 
 var tcp = net.connect({
-  host: process.env.RFB_HOST || 'bekti.io',
-  port: process.env.RFB_MONITOR_PORT || 4444
+  host: process.env.RFB_HOST,
+  port: process.env.RFB_MONITOR_PORT
 });
 
 function broadcast(event, data) {
@@ -104,4 +104,4 @@ http.listen(5000, function() {
 
 setInterval(function() {
   global.gc();
-}, 5000);
+}, 60000);
