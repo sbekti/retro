@@ -7,14 +7,12 @@ var rfb = require('rfb2');
 var net = require('net');
 
 var r = rfb.createConnection({
-  host: 'bekti.io',
-  port: 5902,
-  //host: '192.168.2.27',
-  //port: 5900,
-  password: ''
+  host: process.env.RFB_HOST,
+  port: process.env.RFB_PORT,
+  password: process.env.RFB_PASSWORD
 });
 
-var tcp = net.connect({host: 'bekti.io', port: 4444});
+var tcp = net.connect({host: process.env.RFB_HOST, port: process.env.RFB_MONITOR_PORT});
 
 r.on('connect', function() {
   console.log('Remote screen name: ' + r.title + ' width:' + r.width + ' height: ' + r.height);
