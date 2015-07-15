@@ -1,5 +1,4 @@
-var socket = new SockJS('/echo');
-//var socket = io();
+var socket = new SockJS('/ws');
 var keymap = require('./keymap');
 var canvas = document.getElementById('canvas-screen');
 var context = canvas.getContext('2d');
@@ -7,6 +6,15 @@ var context = canvas.getContext('2d');
 var shifting = false;
 var ctrling = false;
 var alting = false;
+
+function send(event, data) {
+  var payload = {
+    event: event,
+    data: data
+  };
+
+  socket.send(JSON.stringify(payload));
+}
 
 function qemukey(keycode) {
   var mapping = keymap[keycode];
@@ -39,13 +47,13 @@ $('#canvas-screen').mousedown(function(e) {
   var button = e.which;
   if (button == 3) button = 4;
 
-  var payload = {
+  var data = {
     x: x,
     y: y,
     button: button
   };
 
-  //socket.emit('pointer', payload);
+  send('pointer', data);
 });
 
 $('#canvas-screen').mouseup(function(e) {
@@ -54,13 +62,13 @@ $('#canvas-screen').mouseup(function(e) {
   var x = (e.pageX - offset.left).toFixed(0);
   var y = (e.pageY - offset.top).toFixed(0);
 
-  var payload = {
+  var data = {
     x: x,
     y: y,
     button: 0
   };
 
-  //socket.emit('pointer', payload);
+  send('pointer', data);
 });
 
 $('#canvas-screen').mousemove(function(e) {
@@ -71,19 +79,19 @@ $('#canvas-screen').mousemove(function(e) {
   var button = e.which;
   if (button == 3) button = 4;
 
-  var payload = {
+  var data = {
     x: x,
     y: y,
     button: button
   };
 
-  //socket.emit('pointer', payload);
+  send('pointer', data);
 });
 
 $(document).keydown(function(e) {
   e.preventDefault();
   var key = qemukey(e.which);
-  //if (key) socket.emit('key', key);
+  if (key) send('key', key);
 });
 
 $(document).keyup(function(e) {
@@ -99,45 +107,34 @@ $(document).keyup(function(e) {
   }
 });
 
-// socket.on('frame', function(payload) {
-//   var data = payload.frame;
-//   var image = context.createImageData(payload.width, payload.height);
-//
-//   for (var s = 0, d = 0, len = payload.width * payload.height * 4; d < len; ++d) {
-//     if (d % 4 == 3) {
-//       image.data[d] = 0xff;
-//     } else {
-//       image.data[d] = data[s];
-//       ++s;
-//     }
-//   }
-//
-//   context.putImageData(image, payload.x, payload.y);
-// });
+function handleFrameUpdate(data) {
+  var frame = data.frame;
+  var image = context.createImageData(data.width, data.height);
 
-// socket.on('count', function(count) {
-//   $('#online-count').text(count);
-// });
+  for (var s = 0, d = 0, len = data.width * data.height * 4; d < len; ++d) {
+    if (d % 4 == 3) {
+      image.data[d] = 0xff;
+    } else {
+      image.data[d] = frame[s];
+      ++s;
+    }
+  }
 
-
-socket.onopen = function() {
-  console.log('open');
-
-  var send = {
-    message: 'Hi!',
-    username: 'sbekti'
-  };
-
-  socket.send(JSON.stringify(send));
-};
-
-socket.onclose = function() {
-  console.log('close');
-};
+  context.putImageData(image, data.x, data.y);
+}
 
 socket.onmessage = function(e) {
-  var content = JSON.parse(e.data);
-  console.log(content);
+  var payload = JSON.parse(e.data);
+
+  switch (payload.event) {
+    case 'count':
+      $('#online-count').text(payload.data.count);
+      break;
+    case 'frame':
+        handleFrameUpdate(payload.data);
+      break;
+    default:
+  }
 };
 
 var x = canvas.width / 2;
