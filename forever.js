@@ -1,7 +1,8 @@
 var forever = require('forever-monitor');
 
 var child = new(forever.Monitor)('server.js', {
-  'spinSleepTime': 1000
+  'minUptime': 1000,
+  'spinSleepTime': 5000
 });
 
 child.on('exit', function() {
