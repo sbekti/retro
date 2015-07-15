@@ -204,6 +204,10 @@ socket.on('frame', function(payload) {
   context.putImageData(image, payload.x, payload.y);
 });
 
+socket.on('count', function(count) {
+  $('#online-count').text(count);
+});
+
 var x = canvas.width / 2;
 var y = canvas.height / 2;
 

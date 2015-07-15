@@ -12,6 +12,12 @@
       float: none;
       margin-left: auto;
       margin-right: auto;
+      margin-top: 30px;
+    }
+
+    .shutdown-warning {
+      margin-bottom: 0;
+      padding: 5px 0;
     }
   </style>
 </head>
@@ -19,11 +25,11 @@
   <div class="container">
     <h1>Bekti Retro-as-a-Service (RaaS)</h1>
     <p>See the internet through Internet Explorer 5</p>
-    <p>DO NOT TURN OFF THE COMPUTER</p>
     <div class="well screen">
       <canvas id="canvas-screen" width="640" height="480"></canvas>
+      <div class="alert alert-warning shutdown-warning" role="alert"><strong>Warning!</strong> Do not turn off the computer as it will lose all settings upon restart.</div>
     </div>
-    <p>Copyright &copy; 2015 Samudra Harapan Bekti | <a href="http://bekti.io/">Bekti I/O</a></p>
+    <p>Online users: <span id="online-count">updating...</span> | Copyright &copy; 2015 Samudra Harapan Bekti | <a href="http://bekti.io/">Bekti I/O</a></p>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>

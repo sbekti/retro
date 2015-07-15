@@ -6,16 +6,28 @@ var path = require('path');
 var rfb = require('rfb2');
 var net = require('net');
 
+var fullFrameBuffer = {};
+var onlineCount = 0;
+
 var r = rfb.createConnection({
   host: process.env.RFB_HOST,
   port: process.env.RFB_PORT,
   password: process.env.RFB_PASSWORD
 });
 
-var tcp = net.connect({host: process.env.RFB_HOST, port: process.env.RFB_MONITOR_PORT});
+var tcp = net.connect({
+  host: process.env.RFB_HOST,
+  port: process.env.RFB_MONITOR_PORT
+});
 
 r.on('connect', function() {
   console.log('Remote screen name: ' + r.title + ' width:' + r.width + ' height: ' + r.height);
+
+  fullFrameBuffer.x = 0;
+  fullFrameBuffer.y = 0;
+  fullFrameBuffer.width = r.width;
+  fullFrameBuffer.height = r.height;
+  fullFrameBuffer.frame = new Array(r.width * r.height * 3).fill(0);
 });
 
 r.on('rect', function(rect) {
@@ -43,7 +55,10 @@ r.on('rect', function(rect) {
 });
 
 io.on('connection', function(socket) {
-  r.requestUpdate(false, 0, 0, r.width, r.height);
+  ++onlineCount;
+  io.emit('count', onlineCount);
+  io.emit('frame', fullFrameBuffer);
+  //r.requestUpdate(false, 0, 0, r.width, r.height);
 
   socket.on('pointer', function(payload) {
     r.pointerEvent(payload.x, payload.y, payload.button);
@@ -51,6 +66,11 @@ io.on('connection', function(socket) {
 
   socket.on('key', function(key) {
     tcp.write('sendkey ' + key + '\n');
+  });
+
+  socket.on('disconnect', function(payload) {
+    --onlineCount;
+    io.emit('count', onlineCount);
   });
 });
 
