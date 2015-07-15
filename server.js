@@ -27,7 +27,7 @@ r.on('connect', function() {
   fullFrameBuffer.y = 0;
   fullFrameBuffer.width = r.width;
   fullFrameBuffer.height = r.height;
-  fullFrameBuffer.frame = new Array(r.width * r.height * 3).fill(0);
+  fullFrameBuffer.frame = Uint8Array(r.width * r.height * 3);
 });
 
 r.on('rect', function(rect) {
